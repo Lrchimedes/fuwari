@@ -1,8 +1,8 @@
 {
-  “$schema”: “https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json”,
-  “name”: “fuwari”, // 你的项目名称，与Cloudflare上创建的名称一致
-  “compatibility_date”: “2026-01-20”, // 使用当前日期，格式为 YYYY-MM-DD
-  “assets”: {
-    “directory”: “./dist” // 指向Astro构建输出的静态资源目录
-  }
+	"$schema": "https://raw.githubusercontent.com/cloudflare/workers-sdk/main/packages/wrangler/config-schema.json",
+	"name": "fuwari",
+	"compatibility_date": "2026-01-20",
+	"assets": {
+		"directory": "./dist"
+	}
 }
