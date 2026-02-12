@@ -57,12 +57,21 @@ const imageStyle = `object-position: ${position}`;
         const currentUrl = window.location.origin;
         const images = document.querySelectorAll('img[data-src]') as NodeListOf<HTMLImageElement>;
         
+        let updatedCount = 0;
         images.forEach(img => {
-            const src = img.getAttribute('data-src');
-            if (src && src.startsWith('/')) {
-                img.src = `${currentUrl}${src}`;
+        const src = img.getAttribute('data-src');
+        if (src && src.startsWith('/')) {
+            const newSrc = `${currentUrl}${src}`;
+            if (img.src !== newSrc) {
+                img.src = newSrc;
+                updatedCount++;
             }
-        });
+        }
+    });
+        
+        if (updatedCount > 0) {
+            console.log(`Updated ${updatedCount} image URLs to use current domain: ${currentUrl}`);
+        }
     }
     
     if (document.readyState === 'loading') {
