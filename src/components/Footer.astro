@@ -17,7 +17,9 @@ const currentYear = new Date().getFullYear();
         <span class="split">|</span>
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
         <br>
-        <!-- 
+        <a>CDN</a> <span id="cdn-platform"></span>
+        <br>
+        <!--
         Powered by
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>
@@ -29,3 +31,83 @@ const currentYear = new Date().getFullYear();
         -->
     </div>
 </div>
+
+<script>
+async function detectCdnPlatform() {
+    try {
+        // 获取当前页面的响应标头
+        const response = await fetch(window.location.href, {
+            method: 'HEAD',
+            credentials: 'same-origin'
+        });
+        
+        // 获取server标头
+        const serverHeader = response.headers.get('server');
+        
+        // 检测平台
+        let platform = null;
+        if (serverHeader) {
+            if (serverHeader.includes('edgeone-pages')) {
+                platform = 'edgeone-pages';
+            } else if (serverHeader.includes('cloudflare')) {
+                platform = 'cloudflare';
+            } else if (serverHeader.includes('Vercel')) {
+                platform = 'vercel';
+            }
+        }
+        
+        // 显示对应图标
+        const container = document.getElementById('cdn-platform');
+        if (container && platform) {
+            // 清除现有内容
+            container.innerHTML = '';
+            
+            // 创建SVG图标
+            const svg = document.createElement('img');
+            svg.className = 'cdn-icon ml-2 inline-block align-middle';
+            svg.style.height = '1em';
+            svg.style.width = 'auto';
+            svg.style.verticalAlign = 'middle';
+            
+            // 设置SVG路径
+            let svgPath = '';
+            switch (platform) {
+                case 'edgeone-pages':
+                    svgPath = '/assets/svg/edgeone-pages.svg';
+                    break;
+                case 'cloudflare':
+                    svgPath = '/assets/svg/Cloudflare.svg';
+                    break;
+                case 'vercel':
+                    svgPath = '/assets/svg/Vercel.svg';
+                    break;
+                default:
+                    return;
+            }
+            
+            // 设置SVG属性
+            svg.src = svgPath;
+            svg.alt = `${platform} CDN`;
+            svg.loading = 'lazy';
+            
+            // 处理加载错误
+            svg.onerror = function() {
+                container.innerHTML = '';
+            };
+            
+            // 添加到容器
+            container.appendChild(svg);
+        }
+    } catch (error) {
+        console.error('CDN platform detection failed:', error);
+        // 出错时不显示任何图标
+    }
+}
+
+// 页面加载后检测
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', detectCdnPlatform);
+} else {
+    detectCdnPlatform();
+}
+</script>
