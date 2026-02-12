@@ -378,6 +378,35 @@ function updateDynamicLinks() {
 		const currentUrl = window.location.origin;
 		rssLink.href = `${currentUrl}/rss.xml`;
 	}
+
+	updateAllInternalLinks();
+	updateOpenGraphTags();
+}
+
+function updateOpenGraphTags() {
+	const currentUrl = window.location.href;
+	const ogUrlMeta = document.querySelector('meta[property="og:url"]') as HTMLMetaElement;
+	const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]') as HTMLMetaElement;
+	
+	if (ogUrlMeta) {
+		ogUrlMeta.setAttribute('content', currentUrl);
+	}
+	if (twitterUrlMeta) {
+		twitterUrlMeta.setAttribute('content', currentUrl);
+	}
+}
+
+function updateAllInternalLinks() {
+	const currentUrl = window.location.origin;
+	const links = document.querySelectorAll('a[href]') as NodeListOf<HTMLAnchorElement>;
+	
+	links.forEach(link => {
+		const href = link.getAttribute('href');
+		if (href && (href.startsWith('/posts/') || href.startsWith('/archive/') || href.startsWith('/tags/'))) {
+			link.setAttribute('data-original-href', href);
+			link.href = `${currentUrl}${href}`;
+		}
+	});
 }
 
 /* Load settings when entering the site */
@@ -413,7 +442,10 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
+	window.swup.hooks.on('content:replace', () => {
+		initCustomScrollbar();
+		updateAllInternalLinks();
+	})
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')

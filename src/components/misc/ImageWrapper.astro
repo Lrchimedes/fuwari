@@ -50,5 +50,24 @@ const imageStyle = `object-position: ${position}`;
 <div id={id} class:list={[className, 'overflow-hidden relative']}>
     <div class="transition absolute inset-0 dark:bg-black/10 bg-opacity-50 pointer-events-none"></div>
     {isLocal && img && <Image src={img} alt={alt || ""} class={imageClass} style={imageStyle}/>}
-    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle}/>}
+    {!isLocal && <img src={isPublic ? url(src) : src} alt={alt || ""} class={imageClass} style={imageStyle} data-src={src}/>}
 </div>
+<script>
+    function updateImageUrls() {
+        const currentUrl = window.location.origin;
+        const images = document.querySelectorAll('img[data-src]') as NodeListOf<HTMLImageElement>;
+        
+        images.forEach(img => {
+            const src = img.getAttribute('data-src');
+            if (src && src.startsWith('/')) {
+                img.src = `${currentUrl}${src}`;
+            }
+        });
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', updateImageUrls);
+    } else {
+        updateImageUrls();
+    }
+</script>

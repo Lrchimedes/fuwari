@@ -42,3 +42,10 @@ export function getDir(path: string): string {
 export function url(path: string) {
 	return joinUrl("", import.meta.env.BASE_URL, path);
 }
+
+export function getDynamicUrl(path: string): string {
+	if (typeof window !== "undefined") {
+		return joinUrl("", window.location.origin, path);
+	}
+	return url(path);
+}
