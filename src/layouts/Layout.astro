@@ -562,8 +562,11 @@ function updateLicenseLinks() {
 	const licenseLink = document.getElementById('license-link');
 	if (licenseLink) {
 		licenseLink.href = currentUrl;
-		licenseLink.textContent = currentUrl;
+		// 解码 URL 以显示中文
+		const decodedUrl = decodeURIComponent(currentUrl);
+		licenseLink.textContent = decodedUrl;
 		console.log('Updated License link to:', currentUrl);
+		console.log('Displaying decoded URL:', decodedUrl);
 	}
 }
 
