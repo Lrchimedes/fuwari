@@ -39,7 +39,8 @@ async function detectCdnPlatform() {
         // 获取当前页面的响应标头
         const response = await fetch(window.location.href, {
             method: 'HEAD',
-            credentials: 'same-origin'
+            credentials: 'same-origin',
+            cache: 'no-cache'
         });
         
         // 获取server标头
@@ -50,7 +51,7 @@ async function detectCdnPlatform() {
         if (serverHeader) {
             if (serverHeader.includes('edgeone-pages')) {
                 platform = 'edgeone-pages';
-            } else if (serverHeader.includes('cloudflare')) {
+            } else if (serverHeader.toLowerCase().includes('cloudflare')) {
                 platform = 'cloudflare';
             } else if (serverHeader.includes('Vercel')) {
                 platform = 'vercel';
@@ -69,6 +70,8 @@ async function detectCdnPlatform() {
             svg.style.height = '1em';
             svg.style.width = 'auto';
             svg.style.verticalAlign = 'middle';
+            svg.style.display = 'inline-block';
+            svg.style.maxWidth = '100%';
             
             // 设置SVG路径
             let svgPath = '';
@@ -89,15 +92,23 @@ async function detectCdnPlatform() {
             // 设置SVG属性
             svg.src = svgPath;
             svg.alt = `${platform} CDN`;
-            svg.loading = 'lazy';
+            svg.loading = 'eager'; // 改为eager加载，确保在移动设备上及时显示
             
             // 处理加载错误
             svg.onerror = function() {
+                console.error('CDN icon failed to load:', svgPath);
                 container.innerHTML = '';
+            };
+            
+            // 处理加载成功
+            svg.onload = function() {
+                console.log('CDN icon loaded successfully:', svgPath);
             };
             
             // 添加到容器
             container.appendChild(svg);
+        } else if (container) {
+            console.log('No CDN platform detected, server header:', serverHeader);
         }
     } catch (error) {
         console.error('CDN platform detection failed:', error);
@@ -111,4 +122,11 @@ if (document.readyState === 'loading') {
 } else {
     detectCdnPlatform();
 }
+
+// 页面可见性变化时重新检测（解决移动设备上的一些加载问题）
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) {
+        detectCdnPlatform();
+    }
+});
 </script>
