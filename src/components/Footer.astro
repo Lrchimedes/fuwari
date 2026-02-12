@@ -36,11 +36,14 @@ const currentYear = new Date().getFullYear();
 <script>
 async function detectCdnPlatform() {
     try {
-        // 获取当前页面的响应标头
+        // 使用GET请求代替HEAD请求，在移动设备上更可靠
         const response = await fetch(window.location.href, {
-            method: 'HEAD',
+            method: 'GET',
             credentials: 'same-origin',
-            cache: 'no-cache'
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'text/html'
+            }
         });
         
         // 获取server标头
@@ -72,6 +75,7 @@ async function detectCdnPlatform() {
             svg.style.verticalAlign = 'middle';
             svg.style.display = 'inline-block';
             svg.style.maxWidth = '100%';
+            svg.style.marginLeft = '4px';
             
             // 设置SVG路径
             let svgPath = '';
@@ -92,12 +96,13 @@ async function detectCdnPlatform() {
             // 设置SVG属性
             svg.src = svgPath;
             svg.alt = `${platform} CDN`;
-            svg.loading = 'eager'; // 改为eager加载，确保在移动设备上及时显示
+            svg.loading = 'eager';
             
             // 处理加载错误
             svg.onerror = function() {
                 console.error('CDN icon failed to load:', svgPath);
-                container.innerHTML = '';
+                // 错误时显示平台名称文本
+                container.textContent = platform;
             };
             
             // 处理加载成功
@@ -109,10 +114,21 @@ async function detectCdnPlatform() {
             container.appendChild(svg);
         } else if (container) {
             console.log('No CDN platform detected, server header:', serverHeader);
+            // 尝试使用navigator.userAgent作为备用检测
+            const userAgent = navigator.userAgent;
+            console.log('User agent:', userAgent);
         }
     } catch (error) {
         console.error('CDN platform detection failed:', error);
-        // 出错时不显示任何图标
+        // 出错时尝试备用方案
+        try {
+            const container = document.getElementById('cdn-platform');
+            if (container) {
+                container.textContent = 'CDN';
+            }
+        } catch (e) {
+            console.error('Fallback failed:', e);
+        }
     }
 }
 
@@ -123,10 +139,19 @@ if (document.readyState === 'loading') {
     detectCdnPlatform();
 }
 
-// 页面可见性变化时重新检测（解决移动设备上的一些加载问题）
-document.addEventListener('visibilitychange', function() {
-    if (!document.hidden) {
-        detectCdnPlatform();
-    }
-});
+// 页面可见性变化时重新检测
+if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            detectCdnPlatform();
+        }
+    });
+    
+    // 窗口加载完成后再次检测
+    window.addEventListener('load', detectCdnPlatform);
+}
+
+// 添加延迟检测，确保在各种情况下都能运行
+setTimeout(detectCdnPlatform, 1000);
+setTimeout(detectCdnPlatform, 3000);
 </script>
