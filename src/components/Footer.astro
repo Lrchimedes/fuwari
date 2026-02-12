@@ -17,12 +17,7 @@ const currentYear = new Date().getFullYear();
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
         -->
         <a target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
-        <span class="ml-2">
-            <!-- 直接嵌入SVG图标，确保在所有设备上都能显示 -->
-            <img src="/assets/svg/edgeone-pages.svg" alt="EdgeOne Pages CDN" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-            <img src="/assets/svg/Cloudflare.svg" alt="Cloudflare CDN" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-            <img src="/assets/svg/Vercel.svg" alt="Vercel CDN" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-        </span>
+        <span id="cdn-platform" class="ml-2"></span>
         <br>
         <!--
         <a>CDN</a> <span id="cdn-platform"></span>
@@ -37,3 +32,105 @@ const currentYear = new Date().getFullYear();
         -->
     </div>
 </div>
+
+<script>
+// CDN平台检测函数
+async function detectCdnPlatform() {
+    try {
+        // 获取当前页面的响应标头
+        const response = await fetch(window.location.href, {
+            method: 'GET',
+            credentials: 'same-origin',
+            cache: 'no-cache',
+            headers: {
+                'Accept': 'text/html'
+            }
+        });
+        
+        // 获取server标头
+        const serverHeader = response.headers.get('server');
+        
+        // 检测平台
+        let platform = null;
+        if (serverHeader) {
+            if (serverHeader.includes('edgeone-pages')) {
+                platform = 'edgeone-pages';
+            } else if (serverHeader.toLowerCase().includes('cloudflare')) {
+                platform = 'cloudflare';
+            } else if (serverHeader.includes('Vercel')) {
+                platform = 'vercel';
+            }
+        }
+        
+        // 显示对应图标
+        const container = document.getElementById('cdn-platform');
+        if (container) {
+            // 清除现有内容
+            container.innerHTML = '';
+            
+            // 如果检测到平台，显示对应图标
+            if (platform) {
+                // 创建SVG图标
+                const svg = document.createElement('img');
+                svg.className = 'cdn-icon inline-block align-middle';
+                svg.style.height = '1em';
+                svg.style.width = 'auto';
+                svg.style.verticalAlign = 'middle';
+                svg.style.display = 'inline-block';
+                svg.style.maxWidth = '100%';
+                svg.style.marginLeft = '4px';
+                
+                // 设置SVG路径
+                let svgPath = '';
+                switch (platform) {
+                    case 'edgeone-pages':
+                        svgPath = '/assets/svg/edgeone-pages.svg';
+                        break;
+                    case 'cloudflare':
+                        svgPath = '/assets/svg/Cloudflare.svg';
+                        break;
+                    case 'vercel':
+                        svgPath = '/assets/svg/Vercel.svg';
+                        break;
+                    default:
+                        return;
+                }
+                
+                // 设置SVG属性
+                svg.src = svgPath;
+                svg.alt = `${platform} CDN`;
+                svg.loading = 'eager';
+                
+                // 处理加载错误
+                svg.onerror = function() {
+                    this.style.display = 'none';
+                };
+                
+                // 添加到容器
+                container.appendChild(svg);
+            }
+        }
+    } catch (error) {
+        console.error('CDN platform detection failed:', error);
+        // 出错时不显示任何图标
+    }
+}
+
+// 页面加载后检测
+if (typeof window !== 'undefined') {
+    // 使用setTimeout确保DOM已完全加载
+    setTimeout(detectCdnPlatform, 500);
+    
+    // 窗口加载完成后再次检测
+    window.addEventListener('load', detectCdnPlatform);
+    
+    // 页面可见性变化时重新检测
+    if (typeof document !== 'undefined' && document.addEventListener) {
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                detectCdnPlatform();
+            }
+        });
+    }
+}
+</script>
