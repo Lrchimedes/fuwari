@@ -1,9 +1,12 @@
-# About
-This is the demo site for [Fuwari](https://github.com/saicaca/fuwari).
+# 关于本站
+> ### 在寻求答案的路上，谁不是在流浪这里是拉基没有米的个人博客
+> - 这里是拉基没有米的个人博客
+> - 不定期更新日常记录、生活琐碎
+> - 生活里有许多事情不应该只是"发生过"！
 
-::github{repo="saicaca/fuwari"}
+2019-12-25
 
-> ### Sources of images used in this site
-> - [Unsplash](https://unsplash.com/)
-> - [星と少女](https://www.pixiv.net/artworks/108916539) by [Stella](https://www.pixiv.net/users/93273965)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
+有个问题一直困扰我许久——故事的意义，当下似乎有一些头绪。一个个故事，重复着一次又一次的假设。其意在尝试冲破客体单一性结果这一束缚，将原本故事的意义最终似乎又因此落回的客体本身，是一场对自我是非的拷问
+
+有些问题表面上是选择题，实际上是哲学题 真实是什么？眼睛看到的是真实吗？真实没有客观标准，但对真实的判断来自于问题所处的维度和解决问题的目的
+
