@@ -17,14 +17,7 @@ const currentYear = new Date().getFullYear();
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
         -->
         <a target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
-        <span class="cdn-platform-container ml-2">
-            <!-- EdgeOne Pages -->
-            <img src="/assets/svg/edgeone-pages.svg" alt="EdgeOne Pages CDN" class="cdn-icon inline-block align-middle" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-            <!-- Cloudflare -->
-            <img src="/assets/svg/Cloudflare.svg" alt="Cloudflare CDN" class="cdn-icon inline-block align-middle" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-            <!-- Vercel -->
-            <img src="/assets/svg/Vercel.svg" alt="Vercel CDN" class="cdn-icon inline-block align-middle" style="height: 1em; width: auto; vertical-align: middle; display: inline-block; max-width: 100%; margin-left: 4px;" onerror="this.style.display='none'">
-        </span>
+        <span id="cdn-platform" class="ml-2"></span>
         <br>
         <!--
         <a>CDN</a> <span id="cdn-platform"></span>
@@ -39,3 +32,78 @@ const currentYear = new Date().getFullYear();
         -->
     </div>
 </div>
+
+<script>
+// 简单的CDN平台检测函数
+function detectCdnPlatform() {
+    try {
+        // 获取当前URL的主机名
+        const hostname = window.location.hostname;
+        
+        // 基于主机名或其他特征检测平台
+        let platform = null;
+        
+        // 检查是否为本地开发环境
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            // 本地环境可以显示所有平台图标或不显示
+            return;
+        }
+        
+        // 尝试使用navigator.userAgent检测（备用方案）
+        const userAgent = navigator.userAgent.toLowerCase();
+        
+        // 显示对应图标
+        const container = document.getElementById('cdn-platform');
+        if (container) {
+            // 清除现有内容
+            container.innerHTML = '';
+            
+            // 创建图标元素
+            const createIcon = (platformName, svgPath) => {
+                const svg = document.createElement('img');
+                svg.className = 'cdn-icon inline-block align-middle';
+                svg.style.height = '1em';
+                svg.style.width = 'auto';
+                svg.style.verticalAlign = 'middle';
+                svg.style.display = 'inline-block';
+                svg.style.maxWidth = '100%';
+                svg.style.marginLeft = '4px';
+                svg.src = svgPath;
+                svg.alt = `${platformName} CDN`;
+                svg.loading = 'eager';
+                svg.onerror = function() {
+                    this.style.display = 'none';
+                };
+                return svg;
+            };
+            
+            // 直接显示所有平台图标作为备用方案
+            // 这样可以确保在所有设备上都能看到图标
+            const icons = [
+                createIcon('EdgeOne Pages', '/assets/svg/edgeone-pages.svg'),
+                createIcon('Cloudflare', '/assets/svg/Cloudflare.svg'),
+                createIcon('Vercel', '/assets/svg/Vercel.svg')
+            ];
+            
+            // 添加图标到容器
+            icons.forEach(icon => {
+                container.appendChild(icon);
+            });
+        }
+    } catch (error) {
+        console.error('CDN platform detection failed:', error);
+    }
+}
+
+// 页面加载后检测
+if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', detectCdnPlatform);
+    } else {
+        detectCdnPlatform();
+    }
+    
+    // 窗口加载完成后再次检测
+    window.addEventListener('load', detectCdnPlatform);
+}
+</script>
