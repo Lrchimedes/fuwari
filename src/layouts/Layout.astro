@@ -515,8 +515,8 @@ window.onresize = () => {
 <script is:inline>
 function updateOpenGraphTags() {
 	const currentUrl = window.location.href;
-	const ogUrlMeta = document.querySelector('meta[property="og:url"]') as HTMLMetaElement;
-	const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]') as HTMLMetaElement;
+	const ogUrlMeta = document.querySelector('meta[property="og:url"]');
+	const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]');
 	
 	if (ogUrlMeta) {
 		ogUrlMeta.setAttribute('content', currentUrl);
@@ -530,7 +530,7 @@ function updateOpenGraphTags() {
 
 function updateAllInternalLinks() {
 	const currentUrl = window.location.origin;
-	const links = document.querySelectorAll('a[href]') as NodeListOf<HTMLAnchorElement>;
+	const links = document.querySelectorAll('a[href]');
 	
 	let updatedCount = 0;
 	links.forEach(link => {
@@ -546,7 +546,7 @@ function updateAllInternalLinks() {
 }
 
 function updateDynamicLinks() {
-	const rssLink = document.getElementById('rss-link') as HTMLLinkElement;
+	const rssLink = document.getElementById('rss-link');
 	if (rssLink) {
 		const currentUrl = window.location.origin;
 		rssLink.href = `${currentUrl}/rss.xml`;
@@ -559,7 +559,7 @@ function updateDynamicLinks() {
 
 function updateLicenseLinks() {
 	const currentUrl = window.location.href;
-	const licenseLink = document.getElementById('license-link') as HTMLAnchorElement;
+	const licenseLink = document.getElementById('license-link');
 	if (licenseLink) {
 		licenseLink.href = currentUrl;
 		licenseLink.textContent = currentUrl;

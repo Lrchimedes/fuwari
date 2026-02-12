@@ -49,7 +49,7 @@ const jsonLd = {
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} id="json-ld"></script>
     <script is:inline>
         function updateJsonLd() {
-            const jsonLdScript = document.getElementById('json-ld') as HTMLScriptElement;
+            const jsonLdScript = document.getElementById('json-ld');
             if (jsonLdScript) {
                 try {
                     const data = JSON.parse(jsonLdScript.textContent || '{}');
