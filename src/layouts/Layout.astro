@@ -554,6 +554,17 @@ function updateDynamicLinks() {
 
 	updateAllInternalLinks();
 	updateOpenGraphTags();
+	updateLicenseLinks();
+}
+
+function updateLicenseLinks() {
+	const currentUrl = window.location.href;
+	const licenseLink = document.getElementById('license-link') as HTMLAnchorElement;
+	if (licenseLink) {
+		licenseLink.href = currentUrl;
+		licenseLink.textContent = currentUrl;
+		console.log('Updated License link to:', currentUrl);
+	}
 }
 
 if (document.readyState === 'loading') {
