@@ -47,7 +47,7 @@ const jsonLd = {
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} id="json-ld"></script>
-    <script>
+    <script is:inline>
         function updateJsonLd() {
             const jsonLdScript = document.getElementById('json-ld') as HTMLScriptElement;
             if (jsonLdScript) {

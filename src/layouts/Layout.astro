@@ -369,50 +369,6 @@ function init() {
 	loadHue();
 	initCustomScrollbar();
 	showBanner();
-	updateDynamicLinks();
-}
-
-function updateDynamicLinks() {
-	const rssLink = document.getElementById('rss-link') as HTMLLinkElement;
-	if (rssLink) {
-		const currentUrl = window.location.origin;
-		rssLink.href = `${currentUrl}/rss.xml`;
-	}
-
-	updateAllInternalLinks();
-	updateOpenGraphTags();
-}
-
-function updateOpenGraphTags() {
-	const currentUrl = window.location.href;
-	const ogUrlMeta = document.querySelector('meta[property="og:url"]') as HTMLMetaElement;
-	const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]') as HTMLMetaElement;
-	
-	if (ogUrlMeta) {
-		ogUrlMeta.setAttribute('content', currentUrl);
-		console.log('Updated OG URL to:', currentUrl);
-	}
-	if (twitterUrlMeta) {
-		twitterUrlMeta.setAttribute('content', currentUrl);
-		console.log('Updated Twitter URL to:', currentUrl);
-	}
-}
-
-function updateAllInternalLinks() {
-	const currentUrl = window.location.origin;
-	const links = document.querySelectorAll('a[href]') as NodeListOf<HTMLAnchorElement>;
-	
-	let updatedCount = 0;
-	links.forEach(link => {
-		const href = link.getAttribute('href');
-		if (href && (href.startsWith('/posts/') || href.startsWith('/archive/') || href.startsWith('/tags/'))) {
-			link.setAttribute('data-original-href', href);
-			link.href = `${currentUrl}${href}`;
-			updatedCount++;
-		}
-	});
-	
-	console.log(`Updated ${updatedCount} internal links to use current domain: ${currentUrl}`);
 }
 
 /* Load settings when entering the site */
@@ -450,7 +406,12 @@ const setup = () => {
 	})
 	window.swup.hooks.on('content:replace', () => {
 		initCustomScrollbar();
-		updateAllInternalLinks();
+		if (typeof updateAllInternalLinks === 'function') {
+			updateAllInternalLinks();
+		}
+		if (typeof updateOpenGraphTags === 'function') {
+			updateOpenGraphTags();
+		}
 	})
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
@@ -549,6 +510,57 @@ window.onresize = () => {
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
 
+</script>
+
+<script is:inline>
+function updateOpenGraphTags() {
+	const currentUrl = window.location.href;
+	const ogUrlMeta = document.querySelector('meta[property="og:url"]') as HTMLMetaElement;
+	const twitterUrlMeta = document.querySelector('meta[property="twitter:url"]') as HTMLMetaElement;
+	
+	if (ogUrlMeta) {
+		ogUrlMeta.setAttribute('content', currentUrl);
+		console.log('Updated OG URL to:', currentUrl);
+	}
+	if (twitterUrlMeta) {
+		twitterUrlMeta.setAttribute('content', currentUrl);
+		console.log('Updated Twitter URL to:', currentUrl);
+	}
+}
+
+function updateAllInternalLinks() {
+	const currentUrl = window.location.origin;
+	const links = document.querySelectorAll('a[href]') as NodeListOf<HTMLAnchorElement>;
+	
+	let updatedCount = 0;
+	links.forEach(link => {
+		const href = link.getAttribute('href');
+		if (href && (href.startsWith('/posts/') || href.startsWith('/archive/') || href.startsWith('/tags/'))) {
+			link.setAttribute('data-original-href', href);
+			link.href = `${currentUrl}${href}`;
+			updatedCount++;
+		}
+	});
+	
+	console.log(`Updated ${updatedCount} internal links to use current domain: ${currentUrl}`);
+}
+
+function updateDynamicLinks() {
+	const rssLink = document.getElementById('rss-link') as HTMLLinkElement;
+	if (rssLink) {
+		const currentUrl = window.location.origin;
+		rssLink.href = `${currentUrl}/rss.xml`;
+	}
+
+	updateAllInternalLinks();
+	updateOpenGraphTags();
+}
+
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', updateDynamicLinks);
+} else {
+	updateDynamicLinks();
+}
 </script>
 
 <script>
