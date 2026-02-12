@@ -5,6 +5,7 @@ import type { APIContext } from "astro";
 import MarkdownIt from "markdown-it";
 import sanitizeHtml from "sanitize-html";
 import { siteConfig } from "@/config";
+import { getSiteUrl } from "@utils/site-utils";
 
 const parser = new MarkdownIt();
 
@@ -18,11 +19,12 @@ function stripInvalidXmlChars(str: string): string {
 
 export async function GET(context: APIContext) {
 	const blog = await getSortedPosts();
+	const siteUrl = getSiteUrl(context.request);
 
 	return rss({
 		title: siteConfig.title,
 		description: siteConfig.subtitle || "No description",
-		site: context.site ?? "https://fuwari.vercel.app",
+		site: siteUrl,
 		items: blog.map((post) => {
 			const content =
 				typeof post.body === "string" ? post.body : String(post.body || "");
@@ -31,7 +33,7 @@ export async function GET(context: APIContext) {
 				title: post.data.title,
 				pubDate: post.data.published,
 				description: post.data.description || "",
-				link: url(`/posts/${post.slug}/`),
+				link: `${siteUrl}/posts/${post.slug}/`,
 				content: sanitizeHtml(parser.render(cleanedContent), {
 					allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img"]),
 				}),

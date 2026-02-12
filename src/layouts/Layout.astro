@@ -145,7 +145,7 @@ const bannerOffset =
 
 		<slot name="head"></slot>
 
-		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
+	<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`} id="rss-link"/>
 
 	</head>
 	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
@@ -369,6 +369,15 @@ function init() {
 	loadHue();
 	initCustomScrollbar();
 	showBanner();
+	updateDynamicLinks();
+}
+
+function updateDynamicLinks() {
+	const rssLink = document.getElementById('rss-link') as HTMLLinkElement;
+	if (rssLink) {
+		const currentUrl = window.location.origin;
+		rssLink.href = `${currentUrl}/rss.xml`;
+	}
 }
 
 /* Load settings when entering the site */
