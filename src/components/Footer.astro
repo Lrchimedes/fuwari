@@ -29,17 +29,26 @@ const cdnPlatforms = {
 <div class="transition border-t border-black/10 dark:border-white/15 my-10 border-dashed mx-32"></div>
 <div class="pt-17px flex justify-between" data-v-72957a96="">
     <div class="flex flex-col justify-around" data-v-72957a96="">
-        <span data-v-72957a96="">版权所有：公安部网络安全保卫局</span>
+        <span data-v-72957a96="">
+            版权所有：公安部网络安全保卫局
+            <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a>
+            <a target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
+        </span>
+        <span data-v-72957a96="">
+            <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a>
+            <a target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
+        </span>
         <span class="flex items-center" data-v-72957a96="">
             <div class="inline-block w-16px flex-shrink-0 mr-1" data-v-72957a96="">
                 <img src="/web/assets/logo01.6189a29f.png" class="w-full" style="width: 16px;">
             </div>
             <a class="text-[#749AE3]" href="https://beian.mps.gov.cn/#/query/webSearch?code=11010102000001" target="_blank" data-v-72957a96="">京公网安备 11010102000001号 </a>
-            <a class="text-[#749AE3]" href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" data-v-72957a96="" style="margin-left: 20px;">京ICP备05070602号</a>
+            <a class="text-[#749AE3]" href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" data-v-72957a96="" style="margin-left: 20px;">豫ICP备2026006191号-1</a>
         </span>
-        <span class="text-[#fff]" data-v-72957a96="">建议您使用Edge、Chrome 80+、FireFox 86+、360极速模式等主流浏览器浏览本网站</span>
+        <!-- <span class="text-[#fff]" data-v-72957a96="">建议您使用Edge、Chrome 80+、FireFox 86+、360极速模式等主流浏览器浏览本网站</span>-->
     </div>
     <div class="flex justify-end" data-v-72957a96="">
+        <!--
         <div class="bcyr-img-link bcyr-img-link__p ml-17px ml-17px" data-v-72957a96="">
             <a href="https://zfwzgl.www.gov.cn/exposure/jiucuo.html?site_code=bm09000026&amp;url=http%3A%2F%2Fcyberpolice.mps.gov.cn%2Fwfjb%2Fhtml%2Findex.shtml" target="_blank">
                 <img src="data:image/png;base64,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">
@@ -53,6 +62,7 @@ const cdnPlatforms = {
         <div class="bcyr-img-link ml-17px ml-17px" data-v-72957a96="">
             <img src="/web/assets/web3.97971612.png">
         </div>
+        -->
         <!-- CDN平台显示区域 -->
         <div id="cdn-platform-container" class="bcyr-img-link ml-17px ml-17px" data-v-72957a96="">
         </div>
