@@ -36,10 +36,10 @@ const cdnPlatforms = {
             <a target="_blank" href={url('sitemap-index.xml')}>网站地图</a>
         </span>
         <span class="flex items-center" data-v-72957a96="">
-            <div class="inline-block w-16px flex-shrink-0 mr-1" data-v-72957a96="">
+            <!--<div class="inline-block w-16px flex-shrink-0 mr-1" data-v-72957a96="">
                 <img src="/web/assets/logo01.6189a29f.png" class="w-full" style="width: 16px;">
             </div>
-            <!--<a class="text-[#749AE3]" href="https://beian.mps.gov.cn/#/query/webSearch?code=11010102000001" target="_blank" data-v-72957a96="">京公网安备 11010102000001号 </a>-->
+            <a class="text-[#749AE3]" href="https://beian.mps.gov.cn/#/query/webSearch?code=11010102000001" target="_blank" data-v-72957a96="">京公网安备 11010102000001号 </a>-->
             <a class="text-[#749AE3]" href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank" data-v-72957a96="" style="margin-left: 20px;">豫ICP备2026006191号-1</a>
         </span>
         <!-- <span class="text-[#fff]" data-v-72957a96="">建议您使用Edge、Chrome 80+、FireFox 86+、360极速模式等主流浏览器浏览本网站</span>-->
@@ -144,7 +144,7 @@ async function detectCdnPlatform() {
                 
                 // 创建SVG图标
                 const svg = document.createElement('img');
-                svg.style.height = '1em';
+                svg.style.height = '2em';
                 svg.style.width = 'auto';
                 svg.style.verticalAlign = 'middle';
                 svg.style.display = 'inline-block';
