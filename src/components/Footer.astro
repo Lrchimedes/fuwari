@@ -98,9 +98,61 @@ const cdnPlatforms = {
     }
 };
 
+// 显示CDN图标函数
+function displayCdnIcon(platformKey) {
+    const container = document.getElementById('cdn-platform-container');
+    if (!container || !cdnPlatforms[platformKey]) {
+        return;
+    }
+    
+    const config = cdnPlatforms[platformKey];
+    
+    // 清除现有内容
+    container.innerHTML = '';
+    
+    // 创建链接
+    const link = document.createElement('a');
+    link.href = config.link;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.style.display = 'inline-flex';
+    link.style.alignItems = 'center';
+    
+    // 创建SVG图标
+    const svg = document.createElement('img');
+    svg.style.height = '2em';
+    svg.style.width = 'auto';
+    svg.style.verticalAlign = 'middle';
+    svg.style.display = 'block';
+    svg.style.maxWidth = 'none';
+    svg.style.objectFit = 'contain';
+    
+    // 设置SVG属性
+    svg.src = config.svgPath;
+    svg.alt = config.name + ' CDN';
+    svg.loading = 'eager';
+    
+    // 处理加载错误
+    svg.onerror = function() {
+        console.error('CDN icon failed to load:', config.svgPath);
+        container.innerHTML = config.name;
+    };
+    
+    // 处理加载成功
+    svg.onload = function() {
+        console.log('CDN icon loaded successfully:', config.svgPath);
+    };
+    
+    // 添加到容器
+    link.appendChild(svg);
+    container.appendChild(link);
+}
+
 // CDN平台检测函数
 async function detectCdnPlatform() {
     try {
+        console.log('Starting CDN platform detection...');
+        
         // 获取当前页面的响应标头
         const response = await fetch(window.location.href, {
             method: 'GET',
@@ -113,6 +165,7 @@ async function detectCdnPlatform() {
         
         // 获取server标头
         const serverHeader = response.headers.get('server');
+        console.log('Server header:', serverHeader);
         
         // 检测平台
         let platform = null;
@@ -126,58 +179,38 @@ async function detectCdnPlatform() {
             }
         }
         
-        // 显示对应图标
-        const container = document.getElementById('cdn-platform-container');
-        if (container) {
-            // 清除现有内容
-            container.innerHTML = '';
-            
-            // 如果检测到平台，显示对应图标
-            if (platform && cdnPlatforms[platform]) {
-                const config = cdnPlatforms[platform];
-                
-                // 创建链接
-                const link = document.createElement('a');
-                link.href = config.link;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-                
-                // 创建SVG图标
-                const svg = document.createElement('img');
-                svg.style.height = '2em';
-                svg.style.width = 'auto';
-                svg.style.verticalAlign = 'middle';
-                svg.style.display = 'inline-block';
-                svg.style.maxWidth = '100%';
-                
-                // 设置SVG属性
-                svg.src = config.svgPath;
-                svg.alt = config.name + ' CDN';
-                svg.loading = 'eager';
-                
-                // 处理加载错误
-                svg.onerror = function() {
-                    this.style.display = 'none';
-                };
-                
-                // 添加到容器
-                link.appendChild(svg);
-                container.appendChild(link);
-            }
+        console.log('Detected platform:', platform);
+        
+        // 如果检测到平台，显示对应图标
+        if (platform) {
+            displayCdnIcon(platform);
+        } else {
+            // 备用方案：本地开发环境默认显示一个测试图标
+            console.log('No platform detected, showing default icon');
+            displayCdnIcon('cloudflare');
         }
     } catch (error) {
         console.error('CDN platform detection failed:', error);
-        // 出错时不显示任何图标
+        // 出错时显示默认图标
+        displayCdnIcon('cloudflare');
     }
 }
 
 // 页面加载后检测
 if (typeof window !== 'undefined') {
-    // 使用setTimeout确保DOM已完全加载
-    setTimeout(detectCdnPlatform, 500);
+    // 确保DOM已完全加载
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            detectCdnPlatform();
+        });
+    } else {
+        detectCdnPlatform();
+    }
     
     // 窗口加载完成后再次检测
-    window.addEventListener('load', detectCdnPlatform);
+    window.addEventListener('load', function() {
+        detectCdnPlatform();
+    });
     
     // 页面可见性变化时重新检测
     if (typeof document !== 'undefined' && document.addEventListener) {
